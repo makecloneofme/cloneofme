@@ -378,7 +378,10 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Import the API key from config.js
+        import { API_KEY } from './config.js';
+
         // Global variables for Firebase configuration and app ID (provided by the Canvas environment)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
@@ -514,7 +517,8 @@
                     contents: chatHistory
                 };
 
-                const apiKey = "AIzaSyCbWPuYNMX8OG9C2xPJvJFgrE1OQ8iw31c"; // Canvas will provide this at runtime. If running locally, replace with your actual API key.
+                // Use the imported API_KEY here
+                const apiKey = API_KEY;
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 const response = await fetch(apiUrl, {
@@ -586,4 +590,3 @@
     </script>
 </body>
 </html>
-
