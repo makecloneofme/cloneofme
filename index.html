@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -19,71 +21,129 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 15px; /* Adjusted padding for smaller screens */
             box-sizing: border-box;
-            transition: background-color 0.3s ease; /* Smooth transition for theme change */
+            transition: background-color 0.4s ease-in-out; /* Smooth transition for theme change */
         }
         .container {
             background-color: #ffffff;
             border-radius: 1.5rem; /* More rounded corners */
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem; /* Increased padding */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.08); /* Stronger shadow */
+            padding: 1.8rem; /* Adjusted padding for mobile */
             width: 100%;
             max-width: 800px; /* Increased max-width */
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            gap: 1.8rem; /* Adjusted gap */
+            transition: background-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
             position: relative; /* For theme toggle button positioning */
+            animation: fadeIn 0.8s ease-out; /* Fade in animation for container */
+        }
+        @media (min-width: 640px) { /* Small screens and up (sm breakpoint) */
+            body {
+                padding: 20px;
+            }
+            .container {
+                padding: 2.5rem; /* Original padding for larger screens */
+                gap: 2rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         h1 {
-            transition: color 0.3s ease;
+            transition: color 0.4s ease-in-out;
+            font-size: 1.8rem; /* Adjusted for mobile */
+            line-height: 2.2rem;
+            text-align: center;
+        }
+        @media (min-width: 640px) {
+            h1 {
+                font-size: 2.25rem; /* Original for larger screens */
+                line-height: 2.5rem;
+            }
         }
         .form-group label {
-            font-weight: 600;
+            font-weight: 700; /* Bolder labels */
             color: #334155; /* Slate 700 */
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem; /* Slightly more space */
             display: block;
-            transition: color 0.3s ease;
+            transition: color 0.4s ease-in-out;
+            font-size: 1rem; /* Adjusted for mobile */
+        }
+        @media (min-width: 640px) {
+            .form-group label {
+                font-size: 1.05rem; /* Original for larger screens */
+            }
         }
         .form-group input,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1; /* Slate 300 */
-            border-radius: 0.75rem; /* Rounded input fields */
-            font-size: 1rem;
+            padding: 0.8rem 1rem; /* Adjusted padding for mobile */
+            border: 2px solid #cbd5e1; /* Thicker border */
+            border-radius: 0.85rem; /* Slightly more rounded input fields */
+            font-size: 1rem; /* Adjusted for mobile */
             color: #334155;
-            background-color: #ffffff;
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease, color 0.3s ease;
+            background-color: #f9fafb; /* Off-white background for inputs */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+        }
+        @media (min-width: 640px) {
+            .form-group input,
+            .form-group textarea {
+                padding: 0.9rem 1.1rem; /* Original for larger screens */
+                font-size: 1.05rem;
+            }
         }
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #6366f1; /* Indigo 500 */
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Focus ring */
+            border-color: #4f46e5; /* Indigo 600 */
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.3); /* More prominent focus ring */
+            background-color: #ffffff; /* White background on focus */
         }
         .form-group textarea {
-            min-height: 100px;
+            min-height: 100px; /* Adjusted min-height for mobile */
             resize: vertical;
+        }
+        @media (min-width: 640px) {
+            .form-group textarea {
+                min-height: 120px; /* Original for larger screens */
+            }
         }
         .btn-primary {
             background-color: #6366f1; /* Indigo 500 */
             color: #ffffff;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
+            padding: 0.8rem 1.5rem; /* Adjusted padding for mobile */
+            border-radius: 0.85rem;
+            font-weight: 700; /* Bolder text */
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s, color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
             border: none;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15), 0 3px 7px -3px rgba(0, 0, 0, 0.08); /* More pronounced shadow */
+            letter-spacing: 0.025em; /* Slight letter spacing */
+            font-size: 1rem; /* Adjusted for mobile */
+        }
+        @media (min-width: 640px) {
+            .btn-primary {
+                padding: 0.9rem 1.8rem; /* Original for larger screens */
+                font-size: 1.1rem;
+            }
         }
         .btn-primary:hover {
             background-color: #4f46e5; /* Indigo 600 */
-            transform: translateY(-1px);
+            transform: translateY(-2px); /* More noticeable lift */
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.1);
         }
         .btn-primary:active {
             transform: translateY(0);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:disabled {
+            background-color: #9ca3af; /* Gray out when disabled */
+            cursor: not-allowed;
+            transform: none;
             box-shadow: none;
         }
 
@@ -91,146 +151,292 @@
         .chat-container {
             display: flex;
             flex-direction: column;
-            height: 500px; /* Fixed height for chat area */
+            height: calc(100vh - 150px); /* Use viewport height for mobile */
+            max-height: 550px; /* Max height for larger screens */
             border: 1px solid #e2e8f0; /* Slate 200 */
-            border-radius: 1rem;
+            border-radius: 1.25rem; /* More rounded chat container */
             overflow: hidden;
-            transition: border-color 0.3s ease;
+            transition: border-color 0.4s ease-in-out;
+            background-color: #ffffff; /* Consistent background */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04); /* Subtle inner shadow */
+        }
+        @media (min-width: 640px) {
+            .chat-container {
+                height: 550px; /* Fixed height for larger screens */
+            }
         }
         .chat-messages {
             flex-grow: 1;
-            padding: 1rem;
+            padding: 1rem; /* Adjusted padding for mobile */
             overflow-y: auto;
             background-color: #f8fafc; /* Lightest blue-gray */
-            transition: background-color 0.3s ease;
+            transition: background-color 0.4s ease-in-out;
+            scroll-behavior: smooth; /* Smooth scrolling for new messages */
+        }
+        @media (min-width: 640px) {
+            .chat-messages {
+                padding: 1.5rem; /* Original padding for larger screens */
+            }
         }
         .message {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.8rem; /* Adjusted space between messages for mobile */
             display: flex;
             align-items: flex-start;
+            animation: slideInFromLeft 0.5s ease-out; /* Animation for messages */
+        }
+        @media (min-width: 640px) {
+            .message {
+                margin-bottom: 1rem; /* Original for larger screens */
+            }
         }
         .message.user {
             justify-content: flex-end;
+            animation: slideInFromRight 0.5s ease-out;
         }
-        .message.bot {
-            justify-content: flex-start;
+        @keyframes slideInFromLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
+        @keyframes slideInFromRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
         .message-bubble {
-            max-width: 75%;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            line-height: 1.4;
+            max-width: 85%; /* Wider bubbles for mobile */
+            padding: 0.8rem 1.1rem; /* Adjusted padding for mobile */
+            border-radius: 1.2rem; /* More rounded bubble corners */
+            line-height: 1.5; /* Improved readability */
             word-wrap: break-word;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+            font-size: 0.95rem; /* Slightly smaller text for mobile */
+        }
+        @media (min-width: 640px) {
+            .message-bubble {
+                max-width: 78%; /* Original for larger screens */
+                padding: 0.9rem 1.2rem;
+                font-size: 1rem; /* Default text size */
+            }
         }
         .message.user .message-bubble {
             background-color: #6366f1; /* Indigo 500 */
             color: white;
-            border-bottom-right-radius: 0.25rem; /* Pointed corner */
+            border-bottom-right-radius: 0.4rem; /* Pointed corner */
         }
         .message.bot .message-bubble {
             background-color: #e0e7ff; /* Indigo 100 */
             color: #1e293b; /* Slate 800 */
-            border-bottom-left-radius: 0.25rem; /* Pointed corner */
+            border-bottom-left-radius: 0.4rem; /* Pointed corner */
         }
 
         /* Markdown specific styling within message bubbles */
         .message-bubble pre {
-            background-color: rgba(0, 0, 0, 0.05); /* Light background for code blocks */
-            padding: 0.75rem;
-            border-radius: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.07); /* Slightly darker background for code blocks */
+            padding: 0.75rem; /* Adjusted padding for mobile */
+            border-radius: 0.6rem;
             overflow-x: auto;
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
-            font-family: monospace;
-            font-size: 0.9em;
+            font-family: 'Fira Code', monospace; /* Monospace font for code */
+            font-size: 0.85em; /* Adjusted font size for mobile */
+            line-height: 1.4;
+            color: #334155;
+        }
+        @media (min-width: 640px) {
+            .message-bubble pre {
+                padding: 0.85rem;
+                margin-top: 0.6rem;
+                margin-bottom: 0.6rem;
+                font-size: 0.9em;
+            }
         }
         .message-bubble code {
-            background-color: rgba(0, 0, 0, 0.05);
-            padding: 0.2em 0.4em;
-            border-radius: 0.3rem;
-            font-family: monospace;
-            font-size: 0.9em;
+            background-color: rgba(0, 0, 0, 0.07);
+            padding: 0.2em 0.4em; /* Adjusted padding for mobile */
+            border-radius: 0.4rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em; /* Adjusted font size for mobile */
+            color: #334155;
+        }
+        @media (min-width: 640px) {
+            .message-bubble code {
+                padding: 0.25em 0.5em;
+                font-size: 0.9em;
+            }
         }
         .message-bubble ul, .message-bubble ol {
-            margin-left: 1.25rem;
+            margin-left: 1.25rem; /* Adjusted indentation for mobile */
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
         }
+        @media (min-width: 640px) {
+            .message-bubble ul, .message-bubble ol {
+                margin-left: 1.5rem;
+                margin-top: 0.6rem;
+                margin-bottom: 0.6rem;
+            }
+        }
         .message-bubble li {
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.25rem; /* Adjusted space between list items for mobile */
+        }
+        @media (min-width: 640px) {
+            .message-bubble li {
+                margin-bottom: 0.35rem;
+            }
         }
         .message-bubble p {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.5rem; /* Adjusted margin for mobile */
+        }
+        @media (min-width: 640px) {
+            .message-bubble p {
+                margin-bottom: 0.6rem;
+            }
         }
         .message-bubble p:last-child {
             margin-bottom: 0;
+        }
+        .message-bubble a {
+            color: #4f46e5; /* Link color */
+            text-decoration: underline;
+        }
+        .message-bubble strong {
+            font-weight: 700;
+        }
+        .message-bubble em {
+            font-style: italic;
         }
 
 
         .chat-input-area {
             display: flex;
-            padding: 1rem;
+            padding: 0.8rem; /* Adjusted padding for mobile */
             border-top: 1px solid #e2e8f0;
             background-color: #ffffff;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
+            transition: border-color 0.4s ease-in-out, background-color 0.4s ease-in-out;
+            align-items: center; /* Vertically align items */
+        }
+        @media (min-width: 640px) {
+            .chat-input-area {
+                padding: 1.2rem; /* Original padding for larger screens */
+            }
         }
         .chat-input-area input {
             flex-grow: 1;
-            padding: 0.75rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            margin-right: 0.75rem;
+            padding: 0.75rem 1rem; /* Adjusted padding for mobile */
+            border: 2px solid #cbd5e1;
+            border-radius: 0.85rem;
+            font-size: 1rem; /* Adjusted font size for mobile */
+            margin-right: 0.75rem; /* Adjusted space to button for mobile */
             color: #334155;
-            background-color: #ffffff;
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease, color 0.3s ease;
+            background-color: #f9fafb;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+        }
+        @media (min-width: 640px) {
+            .chat-input-area input {
+                padding: 0.85rem 1.1rem;
+                font-size: 1.05rem;
+                margin-right: 0.9rem;
+            }
         }
         .chat-input-area input:focus {
             outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.3);
+            background-color: #ffffff;
         }
         .loading-indicator {
             text-align: center;
-            padding: 1rem;
+            padding: 0.8rem; /* Adjusted padding for mobile */
             color: #64748b; /* Slate 500 */
             font-style: italic;
-            transition: color 0.3s ease;
+            transition: color 0.4s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.9rem; /* Adjusted font size for mobile */
         }
+        @media (min-width: 640px) {
+            .loading-indicator {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+        }
+        .loading-indicator .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #64748b;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+            opacity: 0.7;
+        }
+        .loading-indicator .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .loading-indicator .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
         .message-box {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 25px; /* Adjusted padding for mobile */
+            border-radius: 15px; /* More rounded */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.1); /* Stronger shadow */
             z-index: 1000;
             text-align: center;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
             color: #1e293b; /* Default text color for message box */
+            animation: zoomIn 0.3s ease-out; /* Animation for message box */
+            max-width: 90%; /* Ensure it fits on small screens */
+            box-sizing: border-box;
+        }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .message-box p {
+            font-size: 1rem; /* Adjusted font size for mobile */
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        @media (min-width: 640px) {
+            .message-box p {
+                font-size: 1.1rem;
+            }
         }
         .message-box button {
             background-color: #6366f1;
             color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 20px; /* Larger button */
+            border-radius: 8px;
             border: none;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-top: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
+        }
+        .message-box button:hover {
+            background-color: #4f46e5;
+            transform: translateY(-1px);
         }
 
         /* Dark Mode Styles */
         body.dark-mode {
-            background-color: #1a202c; /* Dark background */
+            background-color: #1f2937; /* Dark background */
         }
         body.dark-mode .container {
             background-color: #2d3748; /* Darker container */
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
         }
         body.dark-mode h1,
         body.dark-mode .form-group label,
@@ -240,20 +446,22 @@
         }
         body.dark-mode .form-group input,
         body.dark-mode .form-group textarea {
-            background-color: #4a5568; /* Darker input fields */
+            background-color: #3b4556; /* Darker input fields */
             border-color: #4a5568;
             color: #e2e8f0;
         }
         body.dark-mode .form-group input:focus,
         body.dark-mode .form-group textarea:focus {
             border-color: #818cf8; /* Lighter indigo for focus */
-            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.4);
+            background-color: #3b4556;
         }
         body.dark-mode .chat-container {
             border-color: #4a5568;
+            background-color: #2d3748;
         }
         body.dark-mode .chat-messages {
-            background-color: #2d3748; /* Darker chat background */
+            background-color: #26303d; /* Darker chat background */
         }
         body.dark-mode .message.bot .message-bubble {
             background-color: #4a5568; /* Darker bot bubble */
@@ -261,12 +469,15 @@
         }
         /* Markdown specific styling in dark mode */
         body.dark-mode .message-bubble pre {
-            background-color: rgba(255, 255, 255, 0.1); /* Lighter background for code in dark mode */
+            background-color: rgba(255, 255, 255, 0.15); /* Lighter background for code in dark mode */
             color: #e2e8f0;
         }
         body.dark-mode .message-bubble code {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.15);
             color: #e2e8f0;
+        }
+        body.dark-mode .message-bubble a {
+            color: #a78bfa; /* Lighter link color */
         }
 
         body.dark-mode .chat-input-area {
@@ -274,40 +485,59 @@
             border-top-color: #4a5568;
         }
         body.dark-mode .chat-input-area input {
-            background-color: #4a5568;
+            background-color: #3b4556;
             border-color: #4a5568;
             color: #e2e8f0;
+        }
+        body.dark-mode .chat-input-area input:focus {
+            background-color: #3b4556;
+        }
+        body.dark-mode .loading-indicator .dot {
+            background-color: #94a3b8;
         }
         body.dark-mode .message-box button {
             background-color: #818cf8;
         }
+        body.dark-mode .message-box button:hover {
+            background-color: #6366f1;
+        }
 
         .theme-toggle-button {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 1.2rem; /* Adjusted position for mobile */
+            right: 1.2rem; /* Adjusted position for mobile */
             background-color: #e2e8f0;
             color: #4a5568;
             border: none;
             border-radius: 9999px; /* Fully rounded */
-            padding: 0.5rem 0.75rem;
+            padding: 0.5rem 0.75rem; /* Adjusted padding for mobile */
             cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
+            font-size: 0.875rem; /* Adjusted font size for mobile */
+            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-            z-index: 10; /* Ensure it's above other elements */
+            gap: 0.5rem; /* Adjusted space */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            z-index: 10;
+        }
+        @media (min-width: 640px) {
+            .theme-toggle-button {
+                top: 1.8rem; /* Original for larger screens */
+                right: 1.8rem;
+                padding: 0.6rem 0.9rem;
+                font-size: 0.95rem;
+                gap: 0.6rem;
+            }
         }
         .theme-toggle-button:hover {
             background-color: #cbd5e1;
             transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.08);
         }
         .theme-toggle-button:active {
             transform: translateY(0);
-            box-shadow: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
         }
         body.dark-mode .theme-toggle-button {
             background-color: #4a5568;
@@ -321,58 +551,63 @@
 <body>
     <div class="container">
         <button id="theme-toggle" class="theme-toggle-button">
-            <span id="theme-icon">☀️</span>
+            <span id="theme-icon"><i class="fas fa-sun"></i></span>
             <span id="theme-text">Light Mode</span>
         </button>
 
-        <div id="persona-form" class="space-y-6">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Create Your Chatbot Persona</h1>
+        <div id="persona-form" class="space-y-8">
+            <h1 class="text-3xl font-bold text-center text-gray-800">Craft Your AI Companion</h1>
 
             <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" placeholder="e.g., Alex">
+                <label for="name">Bot's Name:</label>
+                <input type="text" id="name" placeholder="e.g., Aura, ByteBuddy">
             </div>
 
             <div class="form-group">
-                <label for="age">Age (optional):</label>
-                <input type="number" id="age" placeholder="e.g., 30">
+                <label for="age">Age (optional, for character context):</label>
+                <input type="number" id="age" placeholder="e.g., 5 (metaphorical AI age)">
             </div>
 
             <div class="form-group">
-                <label for="personality">Personality (e.g., friendly, sarcastic, wise, curious):</label>
-                <textarea id="personality" placeholder="Describe the chatbot's personality in a few words or sentences."></textarea>
+                <label for="personality">Personality (e.g., empathetic, witty, analytical, adventurous):</label>
+                <textarea id="personality" placeholder="Describe how your chatbot behaves and thinks."></textarea>
             </div>
 
             <div class="form-group">
-                <label for="tone">Tone (e.g., formal, casual, enthusiastic, calm):</label>
-                <input type="text" id="tone" placeholder="e.g., casual and humorous">
+                <label for="tone">Tone of Voice (e.g., formal, casual & playful, calm & reassuring):</label>
+                <input type="text" id="tone" placeholder="e.g., casual and subtly humorous">
             </div>
 
             <div class="form-group">
-                <label for="interests">Interests (optional, e.g., technology, history, art):</label>
-                <textarea id="interests" placeholder="What topics is the chatbot interested in?"></textarea>
+                <label for="interests">Key Interests (optional, e.g., sci-fi, sustainable living, coding):</label>
+                <textarea id="interests" placeholder="What topics does your chatbot enjoy discussing or specialize in?"></textarea>
             </div>
 
             <div class="form-group">
-                <label for="background">Background/Role (optional, e.g., a helpful assistant, a storyteller):</label>
-                <textarea id="background" placeholder="Give the chatbot a background or a specific role."></textarea>
+                <label for="background">Background/Role (optional, e.g., a helpful learning assistant, a creative storyteller):</label>
+                <textarea id="background" placeholder="What's your chatbot's purpose or backstory?"></textarea>
             </div>
 
-            <button id="generate-chatbot-btn" class="btn-primary w-full">Generate Chatbot</button>
+            <button id="generate-chatbot-btn" class="btn-primary w-full">Launch My Chatbot</button>
         </div>
 
         <div id="chatbot-interface" class="hidden">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Chat with Your Personalized Bot</h1>
+            <h1 class="text-3xl font-bold text-center text-gray-800">Chat with Your Personalized Bot</h1>
             <div class="chat-container">
                 <div id="chat-messages" class="chat-messages">
                     <!-- Chat messages will be appended here -->
                 </div>
                 <div id="loading-indicator" class="loading-indicator hidden">
-                    Bot is typing...
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <span>Bot is typing...</span>
                 </div>
                 <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="Type your message...">
-                    <button id="send-message-btn" class="btn-primary">Send</button>
+                    <input type="text" id="chat-input" placeholder="Say something to your bot...">
+                    <button id="send-message-btn" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -410,7 +645,7 @@
             messageBox.className = 'message-box';
             messageBox.innerHTML = `
                 <p>${message}</p>
-                <button onclick="this.parentNode.remove()">OK</button>
+                <button onclick="this.parentNode.remove()">Got It!</button>
             `;
             document.body.appendChild(messageBox);
         }
@@ -450,7 +685,7 @@
             const background = document.getElementById('background').value.trim();
 
             if (!name || !personality || !tone) {
-                showMessageBox('Please fill in Name, Personality, and Tone to generate the chatbot.');
+                showMessageBox('Please fill in Name, Personality, and Tone to generate your chatbot. These are essential!');
                 return;
             }
 
@@ -459,16 +694,16 @@
             // Construct the initial system prompt for the LLM
             let initialPrompt = `You are a chatbot named ${userDetails.name}.`;
             if (userDetails.age) {
-                initialPrompt += ` You are ${userDetails.age} years old.`;
+                initialPrompt += ` You are ${userDetails.age} years old (this is a metaphorical age for an AI).`;
             }
-            initialPrompt += ` Your personality is: ${userDetails.personality}. Your tone is: ${userDetails.tone}.`;
+            initialPrompt += ` Your core personality is: ${userDetails.personality}. Your communication tone is: ${userDetails.tone}.`;
             if (userDetails.interests) {
-                initialPrompt += ` Your interests include: ${userDetails.interests}.`;
+                initialPrompt += ` Your primary interests include: ${userDetails.interests}.`;
             }
             if (userDetails.background) {
-                initialPrompt += ` Your role/background is: ${userDetails.background}.`;
+                initialPrompt += ` Your role and background are: ${userDetails.background}.`;
             }
-            initialPrompt += ` Engage in conversation with the user, always staying in character based on these details. Keep your responses concise and natural. You can use Markdown for formatting (e.g., **bold**, *italic*, \`code\`, lists).`;
+            initialPrompt += ` Always maintain this persona. Engage in conversation with the user, keeping your responses concise, natural, and helpful. You can use Markdown for formatting (e.g., **bold**, *italic*, \`code\`, lists, links). Make your initial greeting welcoming and in character.`;
 
             chatHistory = [{ role: "user", parts: [{ text: initialPrompt }] }]; // System prompt as initial user message for context
 
@@ -477,7 +712,7 @@
 
             // Send an empty message to get the initial greeting from the bot
             getChatbotResponse("Hello!").then(() => {
-                // The first response from the bot will be its greeting
+                // The first response from the bot will be its greeting based on the persona
             });
         });
 
@@ -533,11 +768,11 @@
                     chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
                 } else {
                     console.error("Unexpected API response structure:", result);
-                    addMessageToChat("I'm sorry, I couldn't generate a response. Please try again.", 'bot');
+                    addMessageToChat("I'm sorry, I couldn't generate a response. The AI might be busy or had an unexpected output.", 'bot');
                 }
             } catch (error) {
                 console.error("Error fetching chatbot response:", error);
-                addMessageToChat("Oops! Something went wrong. Please check your network connection or try again later.", 'bot');
+                addMessageToChat("Oops! It seems like I've lost connection or encountered an error. Please check your internet and try again.", 'bot');
             } finally {
                 loadingIndicator.classList.add('hidden');
                 sendMessageBtn.disabled = false;
@@ -562,10 +797,10 @@
          */
         function updateThemeToggleButton(isDarkMode) {
             if (isDarkMode) {
-                themeIcon.textContent = '🌙';
+                themeIcon.innerHTML = '<i class="fas fa-moon"></i>';
                 themeText.textContent = 'Dark Mode';
             } else {
-                themeIcon.textContent = '☀️';
+                themeIcon.innerHTML = '<i class="fas fa-sun"></i>';
                 themeText.textContent = 'Light Mode';
             }
         }
