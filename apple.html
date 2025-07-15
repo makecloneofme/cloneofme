@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Chatbot</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease; /* Smooth transition for theme change */
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem; /* Increased padding */
+            width: 100%;
+            max-width: 800px; /* Increased max-width */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* For theme toggle button positioning */
+        }
+        h1 {
+            transition: color 0.3s ease;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #334155; /* Slate 700 */
+            margin-bottom: 0.5rem;
+            display: block;
+            transition: color 0.3s ease;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1; /* Slate 300 */
+            border-radius: 0.75rem; /* Rounded input fields */
+            font-size: 1rem;
+            color: #334155;
+            background-color: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease, color 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1; /* Indigo 500 */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Focus ring */
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn-primary {
+            background-color: #6366f1; /* Indigo 500 */
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s, color 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:hover {
+            background-color: #4f46e5; /* Indigo 600 */
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Chatbot specific styles */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px; /* Fixed height for chat area */
+            border: 1px solid #e2e8f0; /* Slate 200 */
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: border-color 0.3s ease;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background-color: #f8fafc; /* Lightest blue-gray */
+            transition: background-color 0.3s ease;
+        }
+        .message {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message.bot {
+            justify-content: flex-start;
+        }
+        .message-bubble {
+            max-width: 75%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .message.user .message-bubble {
+            background-color: #6366f1; /* Indigo 500 */
+            color: white;
+            border-bottom-right-radius: 0.25rem; /* Pointed corner */
+        }
+        .message.bot .message-bubble {
+            background-color: #e0e7ff; /* Indigo 100 */
+            color: #1e293b; /* Slate 800 */
+            border-bottom-left-radius: 0.25rem; /* Pointed corner */
+        }
+
+        /* Markdown specific styling within message bubbles */
+        .message-bubble pre {
+            background-color: rgba(0, 0, 0, 0.05); /* Light background for code blocks */
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .message-bubble code {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.2em 0.4em;
+            border-radius: 0.3rem;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .message-bubble ul, .message-bubble ol {
+            margin-left: 1.25rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .message-bubble li {
+            margin-bottom: 0.25rem;
+        }
+        .message-bubble p {
+            margin-bottom: 0.5rem;
+        }
+        .message-bubble p:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .chat-input-area {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .chat-input-area input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            margin-right: 0.75rem;
+            color: #334155;
+            background-color: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease, color 0.3s ease;
+        }
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        .loading-indicator {
+            text-align: center;
+            padding: 1rem;
+            color: #64748b; /* Slate 500 */
+            font-style: italic;
+            transition: color 0.3s ease;
+        }
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            color: #1e293b; /* Default text color for message box */
+        }
+        .message-box button {
+            background-color: #6366f1;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a202c; /* Dark background */
+        }
+        body.dark-mode .container {
+            background-color: #2d3748; /* Darker container */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+        }
+        body.dark-mode h1,
+        body.dark-mode .form-group label,
+        body.dark-mode .loading-indicator,
+        body.dark-mode .message-box {
+            color: #e2e8f0; /* Light text */
+        }
+        body.dark-mode .form-group input,
+        body.dark-mode .form-group textarea {
+            background-color: #4a5568; /* Darker input fields */
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        body.dark-mode .form-group input:focus,
+        body.dark-mode .form-group textarea:focus {
+            border-color: #818cf8; /* Lighter indigo for focus */
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+        }
+        body.dark-mode .chat-container {
+            border-color: #4a5568;
+        }
+        body.dark-mode .chat-messages {
+            background-color: #2d3748; /* Darker chat background */
+        }
+        body.dark-mode .message.bot .message-bubble {
+            background-color: #4a5568; /* Darker bot bubble */
+            color: #e2e8f0; /* Light text */
+        }
+        /* Markdown specific styling in dark mode */
+        body.dark-mode .message-bubble pre {
+            background-color: rgba(255, 255, 255, 0.1); /* Lighter background for code in dark mode */
+            color: #e2e8f0;
+        }
+        body.dark-mode .message-bubble code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .chat-input-area {
+            background-color: #2d3748;
+            border-top-color: #4a5568;
+        }
+        body.dark-mode .chat-input-area input {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        body.dark-mode .message-box button {
+            background-color: #818cf8;
+        }
+
+        .theme-toggle-button {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background-color: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            border-radius: 9999px; /* Fully rounded */
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10; /* Ensure it's above other elements */
+        }
+        .theme-toggle-button:hover {
+            background-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        .theme-toggle-button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        body.dark-mode .theme-toggle-button {
+            background-color: #4a5568;
+            color: #e2e8f0;
+        }
+        body.dark-mode .theme-toggle-button:hover {
+            background-color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="theme-toggle" class="theme-toggle-button">
+            <span id="theme-icon">☀️</span>
+            <span id="theme-text">Light Mode</span>
+        </button>
+
+        <div id="persona-form" class="space-y-6">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Create Your Chatbot Persona</h1>
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="e.g., Alex">
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age (optional):</label>
+                <input type="number" id="age" placeholder="e.g., 30">
+            </div>
+
+            <div class="form-group">
+                <label for="personality">Personality (e.g., friendly, sarcastic, wise, curious):</label>
+                <textarea id="personality" placeholder="Describe the chatbot's personality in a few words or sentences."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="tone">Tone (e.g., formal, casual, enthusiastic, calm):</label>
+                <input type="text" id="tone" placeholder="e.g., casual and humorous">
+            </div>
+
+            <div class="form-group">
+                <label for="interests">Interests (optional, e.g., technology, history, art):</label>
+                <textarea id="interests" placeholder="What topics is the chatbot interested in?"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="background">Background/Role (optional, e.g., a helpful assistant, a storyteller):</label>
+                <textarea id="background" placeholder="Give the chatbot a background or a specific role."></textarea>
+            </div>
+
+            <button id="generate-chatbot-btn" class="btn-primary w-full">Generate Chatbot</button>
+        </div>
+
+        <div id="chatbot-interface" class="hidden">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Chat with Your Personalized Bot</h1>
+            <div class="chat-container">
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Chat messages will be appended here -->
+                </div>
+                <div id="loading-indicator" class="loading-indicator hidden">
+                    Bot is typing...
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button id="send-message-btn" class="btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for Firebase configuration and app ID (provided by the Canvas environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // UI Elements
+        const personaForm = document.getElementById('persona-form');
+        const chatbotInterface = document.getElementById('chatbot-interface');
+        const generateChatbotBtn = document.getElementById('generate-chatbot-btn');
+        const chatMessagesDiv = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        const body = document.body;
+
+        // Chatbot Data
+        let userDetails = {};
+        let chatHistory = []; // Stores messages in Gemini API format
+
+        /**
+         * Displays a custom message box instead of alert().
+         * @param {string} message The message to display.
+         */
+        function showMessageBox(message) {
+            const messageBox = document.createElement('div');
+            messageBox.className = 'message-box';
+            messageBox.innerHTML = `
+                <p>${message}</p>
+                <button onclick="this.parentNode.remove()">OK</button>
+            `;
+            document.body.appendChild(messageBox);
+        }
+
+        /**
+         * Adds a message to the chat display.
+         * @param {string} text The message text.
+         * @param {'user'|'bot'} sender The sender of the message.
+         */
+        function addMessageToChat(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'message-bubble';
+
+            if (sender === 'bot') {
+                // Use marked.js to parse Markdown text into HTML
+                bubbleDiv.innerHTML = marked.parse(text);
+            } else {
+                bubbleDiv.textContent = text;
+            }
+
+            messageDiv.appendChild(bubbleDiv);
+            chatMessagesDiv.appendChild(messageDiv);
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight; // Scroll to bottom
+        }
+
+        /**
+         * Generates the chatbot persona and switches to the chat interface.
+         */
+        generateChatbotBtn.addEventListener('click', () => {
+            const name = document.getElementById('name').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const personality = document.getElementById('personality').value.trim();
+            const tone = document.getElementById('tone').value.trim();
+            const interests = document.getElementById('interests').value.trim();
+            const background = document.getElementById('background').value.trim();
+
+            if (!name || !personality || !tone) {
+                showMessageBox('Please fill in Name, Personality, and Tone to generate the chatbot.');
+                return;
+            }
+
+            userDetails = { name, age, personality, tone, interests, background };
+
+            // Construct the initial system prompt for the LLM
+            let initialPrompt = `You are a chatbot named ${userDetails.name}.`;
+            if (userDetails.age) {
+                initialPrompt += ` You are ${userDetails.age} years old.`;
+            }
+            initialPrompt += ` Your personality is: ${userDetails.personality}. Your tone is: ${userDetails.tone}.`;
+            if (userDetails.interests) {
+                initialPrompt += ` Your interests include: ${userDetails.interests}.`;
+            }
+            if (userDetails.background) {
+                initialPrompt += ` Your role/background is: ${userDetails.background}.`;
+            }
+            initialPrompt += ` Engage in conversation with the user, always staying in character based on these details. Keep your responses concise and natural. You can use Markdown for formatting (e.g., **bold**, *italic*, \`code\`, lists).`;
+
+            chatHistory = [{ role: "user", parts: [{ text: initialPrompt }] }]; // System prompt as initial user message for context
+
+            personaForm.classList.add('hidden');
+            chatbotInterface.classList.remove('hidden');
+
+            // Send an empty message to get the initial greeting from the bot
+            getChatbotResponse("Hello!").then(() => {
+                // The first response from the bot will be its greeting
+            });
+        });
+
+        /**
+         * Sends a user message and gets a chatbot response.
+         */
+        sendMessageBtn.addEventListener('click', () => {
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                addMessageToChat(userMessage, 'user');
+                chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+                chatInput.value = '';
+                getChatbotResponse(userMessage);
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessageBtn.click();
+            }
+        });
+
+        /**
+         * Calls the Gemini API to get a chatbot response.
+         * @param {string} userMessage The latest message from the user.
+         */
+        async function getChatbotResponse(userMessage) {
+            loadingIndicator.classList.remove('hidden');
+            sendMessageBtn.disabled = true;
+            chatInput.disabled = true;
+
+            try {
+                const payload = {
+                    contents: chatHistory
+                };
+
+                const apiKey = "AIzaSyCbWPuYNMX8OG9C2xPJvJFgrE1OQ8iw31c"; // Canvas will provide this at runtime. If running locally, replace with your actual API key.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const botResponse = result.candidates[0].content.parts[0].text;
+                    addMessageToChat(botResponse, 'bot');
+                    chatHistory.push({ role: "model", parts: [{ text: botResponse }] });
+                } else {
+                    console.error("Unexpected API response structure:", result);
+                    addMessageToChat("I'm sorry, I couldn't generate a response. Please try again.", 'bot');
+                }
+            } catch (error) {
+                console.error("Error fetching chatbot response:", error);
+                addMessageToChat("Oops! Something went wrong. Please check your network connection or try again later.", 'bot');
+            } finally {
+                loadingIndicator.classList.add('hidden');
+                sendMessageBtn.disabled = false;
+                chatInput.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        /**
+         * Toggles between light and dark themes.
+         */
+        function toggleTheme() {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            updateThemeToggleButton(isDarkMode);
+        }
+
+        /**
+         * Updates the theme toggle button's text and icon.
+         * @param {boolean} isDarkMode True if dark mode is active, false otherwise.
+         */
+        function updateThemeToggleButton(isDarkMode) {
+            if (isDarkMode) {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+            } else {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+            }
+        }
+
+        // Event listener for theme toggle button
+        themeToggleButton.addEventListener('click', toggleTheme);
+
+        // Apply saved theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                updateThemeToggleButton(true);
+            } else {
+                updateThemeToggleButton(false); // Ensure button reflects light mode by default
+            }
+        });
+    </script>
+</body>
+</html>
+
